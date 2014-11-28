@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.sandalov" name="Dmitry Sandalov's XBMC Repo" version="1.0.1" provider-name="sandalov">
     <extension point="xbmc.addon.repository" name="Dmitry Sandalov's XBMC Repo">
-        <info compressed="false">https://raw.githubusercontent.com/DmitrySandalov/1tv-latest-news/master/src/addons.xml</info>
-        <checksum>https://raw.githubusercontent.com/DmitrySandalov/1tv-latest-news/master/src/addons.xml.md5</checksum>
-        <datadir zip="false">https://raw.githubusercontent.com/DmitrySandalov/1tv-latest-news/master/src/</datadir>
+        <info compressed="false">http://sandalov.org/xbmc/1tv-latest-news/src/addons.xml</info>
+        <checksum>http://sandalov.org/xbmc/1tv-latest-news/src/addons.xml.md5</checksum>
+        <datadir zip="false">http://sandalov.org/xbmc/1tv-latest-news/src/</datadir>
     </extension>
     <extension point="xbmc.addon.metadata">
         <summary>Dmitry Sandalov's XBMC Repo</summary>
