@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addons>
+<addon id="plugin.video.1tv-latest-news" name="1tv Latest News" version="1.0.1" provider-name="Dmitry Sandalov">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="addon.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">1tv News Video Archive</summary>
+        <description lang="en">Plays latest news from Russian 1tv</description>
+        <disclaimer lang="en"></disclaimer>
+        <language></language>
+        <platform>all</platform>
+        <license>GNU GPL v2.0</license>
+        <forum></forum>
+        <website>https://github.com/DmitrySandalov/1tv-latest-news</website>
+        <email>dmitry@sandalov.org</email>
+        <source>https://github.com/DmitrySandalov/1tv-latest-news</source>
+    </extension>
+</addon>
+</addons>
