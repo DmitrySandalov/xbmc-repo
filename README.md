@@ -8,4 +8,4 @@ Kodi plugin: plays latest news from Russian 1tv ([1tv.ru](http://www.dereferer.o
 - Use Kodi official [instructions](http://kodi.wiki/view/Add-on_manager#How_to_install_add-ons_from_a_repository)
 
 ### Screenshot
-<a href="https://sandalov.org/blog/wp-content/uploads/2014/11/20141128_233206_d.png">![1tv-latest-news](https://sandalov.org/blog/wp-content/uploads/2014/11/20141128_233206_d-300x171.png)</a>
+<a href="https://sandalov.org/blog/wp-content/uploads/2014/11/20141128_233206_d.png" target="_blank">![1tv-latest-news](https://sandalov.org/blog/wp-content/uploads/2014/11/20141128_233206_d-300x171.png)</a>
