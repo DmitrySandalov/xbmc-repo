@@ -2,7 +2,7 @@
 <addon id="repository.sandalov" name="Dmitry Sandalov's XBMC Repo" version="1.0.1" provider-name="sandalov">
     <extension point="xbmc.addon.repository" name="Dmitry Sandalov's XBMC Repo">
         <info compressed="false">https://raw.githubusercontent.com/DmitrySandalov/xbmc-repo/master/addons/addons.xml</info>
-        <checksum>https://raw.githubusercontent.com/DmitrySandalov/xbmc-repo/master/addons/addons.xml</checksum>
+        <checksum>https://raw.githubusercontent.com/DmitrySandalov/xbmc-repo/master/addons/addons.xml.md5</checksum>
         <datadir zip="true">https://raw.githubusercontent.com/DmitrySandalov/xbmc-repo/master/repo/zip</datadir>
     </extension>
     <extension point="xbmc.addon.metadata">
