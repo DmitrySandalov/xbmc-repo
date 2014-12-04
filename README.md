@@ -12,4 +12,4 @@ plugin.video.1tv-latest-news: plays latest news from Russian 1tv ([1tv.ru](http:
 
 ### Contact
 Feel free to file bugs and feature requests on [Github](https://github.com/DmitrySandalov/1tv-latest-news/issues).  
-Join the conversation in Russian [in my blog](https://sandalov.org/blog/2057/).
+Join the conversation in Russian at [xbmc.ru](http://xbmc.ru/forum/showthread.php?t=4715) or [in my blog](https://sandalov.org/blog/2057/).
