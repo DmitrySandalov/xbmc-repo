@@ -8,7 +8,7 @@ Kodi plugin: plays latest news from Russian 1tv.
 import sys
 import datetime
 import urllib2
-import xml.etree.ElementTree as e
+from xml.etree import ElementTree
 import xbmc
 import xbmcgui
 import xbmcplugin
@@ -17,7 +17,7 @@ __author__ = "Dmitry Sandalov"
 __copyright__ = "Copyright 2014, Dmitry Sandalov"
 __credits__ = []
 __license__ = "GNU GPL v2.0"
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __maintainer__ = "Dmitry Sandalov"
 __email__ = "dmitry@sandalov.org"
 __status__ = "Development"
@@ -41,12 +41,14 @@ elif 19 <= hour < 22:
     stamp_hour = '10'
 elif 22 <= hour <= 23:
     stamp_hour = '11'
+else:
+    stamp_hour = ''
 
 today = today.strftime('%d.%m.%Y')
 url = 'http://www.1tv.ru/swfxml/newsvyp/' + today + '/' + stamp_hour
 
 xml = urllib2.urlopen(url)
-tree = e.parse(xml)
+tree = ElementTree.parse(xml)
 root = tree.getroot()
 namespace = "{http://search.yahoo.com/mrss/}"
 
@@ -54,7 +56,7 @@ items = []
 total = 0
 playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
 xbmc.PlayList.clear(playlist)
-for item in root.iter('item'):
+for item in root.getiterator('item'):
     url = item.find(namespace + "content").attrib['url']
     title = item.find('title').text
     img = item.find(namespace + "thumbnail").attrib['url']

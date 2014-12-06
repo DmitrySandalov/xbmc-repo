@@ -1,2 +1,5 @@
+v1.0.2
+- Fixed #1, Android Python 2.6 support
+
 v1.0.1
 - Initial version
