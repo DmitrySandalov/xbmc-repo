@@ -6,9 +6,9 @@ Kodi plugin: plays latest news from Russian 1tv.
 """
 
 import sys
-import datetime
 import urllib2
 from xml.etree import ElementTree
+from HTMLParser import HTMLParser
 import xbmc
 import xbmcgui
 import xbmcplugin
@@ -22,32 +22,31 @@ __maintainer__ = "Dmitry Sandalov"
 __email__ = "dmitry@sandalov.org"
 __status__ = "Development"
 
+class MyHTMLParser(HTMLParser):
+
+    def __init__(self):
+        HTMLParser.__init__(self)
+        self.links = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "a":
+            for name, value in attrs:
+                if name == "href" and 'swfxml' in value:
+                    self.links.append(value)
+
+    def get_latest(self):
+        return self.links[0].replace('newsvideolist', 'newsvyp')
+
 addon_handle = int(sys.argv[1])
 xbmcplugin.setContent(addon_handle, 'movies')
 
-today = datetime.datetime.now()
-hour = today.hour
+news_archive = 'http://www.1tv.ru/newsvideoarchive/'
+html = urllib2.urlopen(news_archive).read()
+parser = MyHTMLParser()
+parser.feed(html)
+last_edition = parser.get_latest()
 
-if hour < 10:
-    today -= datetime.timedelta(days=1)
-    stamp_hour = '11'
-elif 10 <= hour < 13:
-    stamp_hour = '5'
-elif 13 <= hour < 16:
-    stamp_hour = '7'
-elif 16 <= hour < 19:
-    stamp_hour = '9'
-elif 19 <= hour < 22:
-    stamp_hour = '10'
-elif 22 <= hour <= 23:
-    stamp_hour = '11'
-else:
-    stamp_hour = ''
-
-today = today.strftime('%d.%m.%Y')
-url = 'http://www.1tv.ru/swfxml/newsvyp/' + today + '/' + stamp_hour
-
-xml = urllib2.urlopen(url)
+xml = urllib2.urlopen(last_edition)
 tree = ElementTree.parse(xml)
 root = tree.getroot()
 namespace = "{http://search.yahoo.com/mrss/}"
