@@ -1,5 +1,9 @@
+v1.0.3
+- Fix #2 start crash without network connection
+- Fix #3 news link on weekends
+
 v1.0.2
-- Fixed #1, Android Python 2.6 support
+- Fix #1 Python 2.6 support
 
 v1.0.1
 - Initial version
