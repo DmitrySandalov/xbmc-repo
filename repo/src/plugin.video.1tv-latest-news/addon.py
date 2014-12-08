@@ -22,6 +22,7 @@ __maintainer__ = "Dmitry Sandalov"
 __email__ = "dmitry@sandalov.org"
 __status__ = "Development"
 
+
 class MyHTMLParser(HTMLParser):
 
     def __init__(self):
@@ -37,22 +38,42 @@ class MyHTMLParser(HTMLParser):
     def get_latest(self):
         return self.links[0].replace('newsvideolist', 'newsvyp')
 
+
+def message():
+    dialog = xbmcgui.Dialog()
+    return dialog.yesno(heading="No connection",
+                        line1="Check your connection and try again",
+                        nolabel="Exit", yeslabel="Retry")
+
+
+def get_last_edition():
+    news_archive = 'http://www.1tv.ru/newsvideoarchive/'
+    html = urllib2.urlopen(news_archive).read()
+    parser = MyHTMLParser()
+    parser.feed(html)
+    last_edition_link = parser.get_latest()
+    return urllib2.urlopen(last_edition_link)
+
 addon_handle = int(sys.argv[1])
 xbmcplugin.setContent(addon_handle, 'movies')
 
-news_archive = 'http://www.1tv.ru/newsvideoarchive/'
-html = urllib2.urlopen(news_archive).read()
-parser = MyHTMLParser()
-parser.feed(html)
-last_edition = parser.get_latest()
+edition = ''
+while True:
+    try:
+        edition = get_last_edition()
+    except urllib2.URLError:
+        retry = message()
+        if retry:
+            continue
+        else:
+            sys.exit()
+    break
 
-xml = urllib2.urlopen(last_edition)
-tree = ElementTree.parse(xml)
+tree = ElementTree.parse(edition)
 root = tree.getroot()
 namespace = "{http://search.yahoo.com/mrss/}"
 
 items = []
-total = 0
 playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
 xbmc.PlayList.clear(playlist)
 for item in root.getiterator('item'):
@@ -61,10 +82,9 @@ for item in root.getiterator('item'):
     img = item.find(namespace + "thumbnail").attrib['url']
     li = xbmcgui.ListItem(label=title, iconImage=img, thumbnailImage=img)
     items.append((url, li, False,))
-    total += 1
-    playlist.add(url=url, listitem=li, index=total)
+    playlist.add(url=url, listitem=li, index=len(items))
 
-xbmcplugin.addDirectoryItems(addon_handle, items, totalItems=total)
+xbmcplugin.addDirectoryItems(addon_handle, items, totalItems=len(items))
 xbmc.Player().play(playlist)
 
 xbmcplugin.endOfDirectory(addon_handle)
