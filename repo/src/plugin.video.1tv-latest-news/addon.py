@@ -14,10 +14,10 @@ import xbmcgui
 import xbmcplugin
 
 __author__ = "Dmitry Sandalov"
-__copyright__ = "Copyright 2014, Dmitry Sandalov"
+__copyright__ = "Copyright 2016, Dmitry Sandalov"
 __credits__ = []
 __license__ = "GNU GPL v2.0"
-__version__ = "1.0.3"
+__version__ = "1.0.4"
 __maintainer__ = "Dmitry Sandalov"
 __email__ = "dmitry@sandalov.org"
 __status__ = "Development"
@@ -30,13 +30,13 @@ class MyHTMLParser(HTMLParser):
         self.links = []
 
     def handle_starttag(self, tag, attrs):
-        if tag == "a":
-            for name, value in attrs:
-                if name == "href" and 'swfxml' in value:
-                    self.links.append(value)
+        attrs_dict = dict(attrs)
+        if tag == "a" and 'id' in attrs_dict:
+            if attrs_dict['id'] == 'change_vupysk_img_1':
+                self.links.append(attrs_dict['href'])
 
     def get_latest(self):
-        return self.links[0].replace('newsvideolist', 'newsvyp')
+        return self.links[0].replace('/iframed/embednewslist.html?id=', 'http://www.1tv.ru/swfxml/newsvyp/')
 
 
 def message():
