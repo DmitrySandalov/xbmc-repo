@@ -17,10 +17,11 @@ __author__ = "Dmitry Sandalov"
 __copyright__ = "Copyright 2016, Dmitry Sandalov"
 __credits__ = []
 __license__ = "GNU GPL v2.0"
-__version__ = "1.0.6"
+__version__ = "1.0.7"
 __maintainer__ = "Dmitry Sandalov"
 __email__ = "dmitry@sandalov.org"
 __status__ = "Development"
+
 
 class MyHTMLParser(HTMLParser):
 
@@ -34,7 +35,8 @@ class MyHTMLParser(HTMLParser):
             self.links.append(attrs_dict['data-playlist-url'])
 
     def get_latest(self):
-        return self.links[0].replace('/video_materials.json', 'http://www.1tv.ru/video_materials.json')
+        return self.links[0].replace('/video_materials.json',
+                                     'http://www.1tv.ru/video_materials.json')
 
 
 def message():
@@ -48,7 +50,7 @@ def get_last_edition():
     news_archive = 'http://www.1tv.ru/news/issue'
     html = urllib2.urlopen(news_archive).read()
     parser = MyHTMLParser()
-    parser.feed(html)
+    parser.feed(html.decode('utf-8'))
     last_edition_link = parser.get_latest()
     return urllib2.urlopen(last_edition_link)
 

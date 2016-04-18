@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.1tv-latest-news" name="1tv Latest News" version="1.0.6" provider-name="Dmitry Sandalov">
+<addon id="plugin.video.1tv-latest-news" name="1tv Latest News" version="1.0.7" provider-name="Dmitry Sandalov">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
     </requires>
