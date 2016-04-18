@@ -1,3 +1,6 @@
+v1.0.6
+- Fix #6 Video resolution setting
+
 v1.0.5
 - Fix #5 Ошибка при старте
 - Remote link format change (site redesign)

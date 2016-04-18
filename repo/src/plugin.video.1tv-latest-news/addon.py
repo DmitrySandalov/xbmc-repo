@@ -17,7 +17,7 @@ __author__ = "Dmitry Sandalov"
 __copyright__ = "Copyright 2016, Dmitry Sandalov"
 __credits__ = []
 __license__ = "GNU GPL v2.0"
-__version__ = "1.0.5"
+__version__ = "1.0.6"
 __maintainer__ = "Dmitry Sandalov"
 __email__ = "dmitry@sandalov.org"
 __status__ = "Development"
@@ -69,14 +69,19 @@ while True:
 
 edition_items = json.load(edition)
 
+resolutions_dict = {'hd': 0, 'sd': 1, 'ld': 2}
+resolution_setting = xbmcplugin.getSetting(addon_handle, 'video_res')
+resolution = resolutions_dict[resolution_setting.lower()]
+
 items = []
 playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
 xbmc.PlayList.clear(playlist)
 for item in edition_items:
-    url = "http:" + item['mbr'][0]['src']
+    url = "http:" + item['mbr'][resolution]['src']
     title = item['title']
     img = "http:" + item['poster']
-    li = xbmcgui.ListItem(label=title, iconImage=img, thumbnailImage=img)
+    thumb = "http:" + item['poster_thumb']
+    li = xbmcgui.ListItem(label=title, iconImage=img, thumbnailImage=thumb)
     items.append((url, li, False,))
     playlist.add(url=url, listitem=li, index=len(items))
 
