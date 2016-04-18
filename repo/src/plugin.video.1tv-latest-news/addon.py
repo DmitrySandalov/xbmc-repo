@@ -7,7 +7,7 @@ Kodi plugin: plays latest news from Russian 1tv.
 
 import sys
 import urllib2
-from xml.etree import ElementTree
+import json
 from HTMLParser import HTMLParser
 import xbmc
 import xbmcgui
@@ -17,11 +17,10 @@ __author__ = "Dmitry Sandalov"
 __copyright__ = "Copyright 2016, Dmitry Sandalov"
 __credits__ = []
 __license__ = "GNU GPL v2.0"
-__version__ = "1.0.4"
+__version__ = "1.0.5"
 __maintainer__ = "Dmitry Sandalov"
 __email__ = "dmitry@sandalov.org"
 __status__ = "Development"
-
 
 class MyHTMLParser(HTMLParser):
 
@@ -31,12 +30,11 @@ class MyHTMLParser(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         attrs_dict = dict(attrs)
-        if tag == "a" and 'id' in attrs_dict:
-            if attrs_dict['id'] == 'change_vupysk_img_1':
-                self.links.append(attrs_dict['href'])
+        if tag == "div" and 'data-playlist-url' in attrs_dict:
+            self.links.append(attrs_dict['data-playlist-url'])
 
     def get_latest(self):
-        return self.links[0].replace('/iframed/embednewslist.html?id=', 'http://www.1tv.ru/swfxml/newsvyp/')
+        return self.links[0].replace('/video_materials.json', 'http://www.1tv.ru/video_materials.json')
 
 
 def message():
@@ -47,7 +45,7 @@ def message():
 
 
 def get_last_edition():
-    news_archive = 'http://www.1tv.ru/newsvideoarchive/'
+    news_archive = 'http://www.1tv.ru/news/issue'
     html = urllib2.urlopen(news_archive).read()
     parser = MyHTMLParser()
     parser.feed(html)
@@ -69,17 +67,15 @@ while True:
             sys.exit()
     break
 
-tree = ElementTree.parse(edition)
-root = tree.getroot()
-namespace = "{http://search.yahoo.com/mrss/}"
+edition_items = json.load(edition)
 
 items = []
 playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
 xbmc.PlayList.clear(playlist)
-for item in root.getiterator('item'):
-    url = item.find(namespace + "content").attrib['url']
-    title = item.find('title').text
-    img = item.find(namespace + "thumbnail").attrib['url']
+for item in edition_items:
+    url = "http:" + item['mbr'][0]['src']
+    title = item['title']
+    img = "http:" + item['poster']
     li = xbmcgui.ListItem(label=title, iconImage=img, thumbnailImage=img)
     items.append((url, li, False,))
     playlist.add(url=url, listitem=li, index=len(items))
