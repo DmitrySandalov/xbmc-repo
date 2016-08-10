@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.1tv-latest-news" name="1tv Latest News" version="1.0.7" provider-name="Dmitry Sandalov">
+<addon id="plugin.video.1tv-latest-news" name="1tv Channel" version="1.0.8" provider-name="Dmitry Sandalov">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
     </requires>
@@ -8,8 +8,8 @@
         <provides>video</provides>
     </extension>
     <extension point="xbmc.addon.metadata">
-        <summary lang="en">1tv News Video Archive</summary>
-        <description lang="en">Plays latest news from Russian 1tv</description>
+        <summary lang="en">1tv Video Archive</summary>
+        <description lang="en">Plays media from 1tv (Russia)</description>
         <disclaimer lang="en"></disclaimer>
         <language></language>
         <platform>all</platform>
