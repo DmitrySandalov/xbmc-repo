@@ -1,7 +1,7 @@
 xbmc-repo
 =========
 
-plugin.video.1tv-latest-news: plays latest news from Russian 1tv ([1tv.ru](http://www.dereferer.org/?http%3A%2F%2F1tv.ru))
+plugin.video.1tv-latest-news: plays media from 1tv (Russia) ([1tv.ru](http://www.dereferer.org/?http%3A%2F%2F1tv.ru))
 
 ### Install
 - Download the [repository zip](https://github.com/DmitrySandalov/xbmc-repo/raw/master/repository.sandalov.zip)
