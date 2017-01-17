@@ -11,6 +11,7 @@ class ShowDirectoryParser(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)
         self.process_links = False
+        self.process_data = False
         self.links_cache = []
 
     def handle_starttag(self, tag, attrs):
@@ -23,9 +24,12 @@ class ShowDirectoryParser(HTMLParser):
             for name, value in attrs:
                 if name == 'href' and '/shows/' in value:
                     self.links_cache.append({'href': value})
+                    self.process_data = True
+                elif name == 'href' and '/shows/' not in value:
+                    self.process_data = False
 
     def handle_data(self, data):
-        if self.process_links and self.lasttag == 'a':
+        if self.process_links and self.process_data and self.lasttag == 'a':
             self.links_cache[-1]['name'] = data
 
     def handle_endtag(self, tag):

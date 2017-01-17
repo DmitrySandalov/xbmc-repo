@@ -1,3 +1,6 @@
+v1.0.9
+- Fix #8 Can't find "Vechernyi Urgant" in tv programs
+
 v1.0.8
 - Add shows, doc
 - Disable news autoplay

@@ -18,10 +18,10 @@ from doc import DocDirectoryParser, DocItemsParser
 from news import NewsItemsParser
 
 __author__ = "Dmitry Sandalov"
-__copyright__ = "Copyright 2016, Dmitry Sandalov"
+__copyright__ = "Copyright 2017, Dmitry Sandalov"
 __credits__ = []
 __license__ = "GNU GPL v2.0"
-__version__ = "1.0.8"
+__version__ = "1.0.9"
 __maintainer__ = "Dmitry Sandalov"
 __email__ = "dmitry@sandalov.org"
 __status__ = "Development"
