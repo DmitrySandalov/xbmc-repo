@@ -22,7 +22,9 @@ class SportDirectoryParser(HTMLParser):
 
         if tag == 'a' and self.process_links:
             for name, value in attrs:
-                if name == 'href' and '/sport/' in value and '/' not in value.split('/sport/')[1]:
+                if name == 'href' and '/sport/' in value \
+                        and '/' not in value.split('/sport/')[1]\
+                        and 'talisman' not in value.split('/sport/')[1]:
                     self.links_cache.append({'href': value})
                     self.process_data = True
                 else:
