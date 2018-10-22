@@ -67,8 +67,7 @@ def add_sport_items(folder):
     sport_items = parser.get_sport_items()
 
     for sport_item in sport_items:
-        res = check_resolution(sport_item)
-        url_item = 'http:' + sport_item['mbr'][res]['src']
+        url_item = get_url_for_item(sport_item)
         li_item = xbmcgui.ListItem(
             sport_item['title'], iconImage=sport_item['poster'])
         xbmcplugin.addDirectoryItem(
@@ -85,8 +84,7 @@ def add_show_items(folder):
     show_items = parser.get_show_items()
 
     for show_item in show_items:
-        res = check_resolution(show_item)
-        url_item = 'http:' + show_item['mbr'][res]['src']
+        url_item = get_url_for_item(show_item)
         li_item = xbmcgui.ListItem(
             show_item['title'], iconImage=show_item['poster'])
         xbmcplugin.addDirectoryItem(
@@ -111,8 +109,7 @@ def add_doc_items(folder):
     doc_items = parser.get_doc_items()
 
     for doc_item in doc_items:
-        res = check_resolution(doc_item)
-        url_item = 'http:' + doc_item['mbr'][res]['src']
+        url_item = get_url_for_item(doc_item)
         li_item = xbmcgui.ListItem(
             doc_item['title'], iconImage=doc_item['poster'])
         xbmcplugin.addDirectoryItem(
@@ -129,14 +126,30 @@ def add_news_items():
     news_items = parser.get_news_items()
 
     for news in news_items:
-        res = check_resolution(news)
-        url_item = 'http:' + news['mbr'][res]['src']
+        url_item = get_url_for_item(news)
         li_item = xbmcgui.ListItem(
             news['title'], iconImage=news['poster'])
         xbmcplugin.addDirectoryItem(
             handle=addon_handle, url=url_item, listitem=li_item)
     xbmcplugin.endOfDirectory(addon_handle)
     return []
+
+
+def get_url_for_item(item):
+    res = check_resolution(item)
+    url_item = ''
+    try:
+        url_parts = item['mbr'][res]['src'].rsplit('_', 1)
+        url_parts1 = url_parts[1].split('.')
+        bitrate = url_parts1[0]
+        extension = url_parts1[1]
+        url_item = "https:" + url_parts[0] + "_," + bitrate + ",." \
+                   + extension + ".urlset/master.m3u8"
+    except IndexError:
+        print "Cannot find link for current resolution"
+    if not url_item:
+        url_item = 'https:' + item['mbr'][res]['src']
+    return url_item
 
 
 def build_url(query):
