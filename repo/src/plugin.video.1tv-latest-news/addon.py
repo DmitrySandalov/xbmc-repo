@@ -88,7 +88,7 @@ def add_show_items(folder):
         res = check_resolution(show_item)
         url_item = 'http:' + show_item['mbr'][res]['src']
         li_item = xbmcgui.ListItem(
-            show_item['title'], iconImage='http:' + show_item['poster'])
+            show_item['title'], iconImage=show_item['poster'])
         xbmcplugin.addDirectoryItem(
             handle=addon_handle, url=url_item, listitem=li_item)
     xbmcplugin.endOfDirectory(addon_handle)
@@ -114,7 +114,7 @@ def add_doc_items(folder):
         res = check_resolution(doc_item)
         url_item = 'http:' + doc_item['mbr'][res]['src']
         li_item = xbmcgui.ListItem(
-            doc_item['title'], iconImage='http:' + doc_item['poster'])
+            doc_item['title'], iconImage=doc_item['poster'])
         xbmcplugin.addDirectoryItem(
             handle=addon_handle, url=url_item, listitem=li_item)
     xbmcplugin.endOfDirectory(addon_handle)
@@ -132,7 +132,7 @@ def add_news_items():
         res = check_resolution(news)
         url_item = 'http:' + news['mbr'][res]['src']
         li_item = xbmcgui.ListItem(
-            news['title'], iconImage='http:' + news['poster'])
+            news['title'], iconImage=news['poster'])
         xbmcplugin.addDirectoryItem(
             handle=addon_handle, url=url_item, listitem=li_item)
     xbmcplugin.endOfDirectory(addon_handle)
