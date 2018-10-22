@@ -23,7 +23,7 @@ class DocDirectoryParser(HTMLParser):
                     self.links_cache.append({'href': value})
 
     def handle_data(self, data):
-        if self.process_links and self.lasttag == 'a':
+        if self.process_links and self.lasttag == 'span':
             self.links_cache[-1]['name'] = data
 
     def handle_endtag(self, tag):
