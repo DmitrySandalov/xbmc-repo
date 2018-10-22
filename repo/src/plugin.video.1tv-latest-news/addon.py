@@ -13,6 +13,7 @@ import exceptions
 import xbmcgui
 import xbmcplugin
 
+from sport import SportDirectoryParser, SportItemsParser
 from shows import ShowDirectoryParser, ShowItemsParser
 from doc import DocDirectoryParser, DocItemsParser
 from news import NewsItemsParser
@@ -42,12 +43,38 @@ def add_directory_items(dir_items):
     xbmcplugin.endOfDirectory(addon_handle)
 
 
+def get_sport_directory():
+    all_sport = 'https://www.1tv.ru/sport?all'
+    html = urlopen_safe(all_sport)
+    parser = SportDirectoryParser()
+    parser.feed(html)
+    return parser.get_sport_directory()
+
+
 def get_shows_directory():
     all_shows = 'https://www.1tv.ru/shows?all'
     html = urlopen_safe(all_shows)
     parser = ShowDirectoryParser()
     parser.feed(html)
     return parser.get_shows_directory()
+
+
+def add_sport_items(folder):
+    sport_link = 'https://www.1tv.ru' + folder
+    html = urlopen_safe(sport_link).decode("utf8")
+    parser = SportItemsParser()
+    parser.feed(html)
+    sport_items = parser.get_sport_items()
+
+    for sport_item in sport_items:
+        res = check_resolution(sport_item)
+        url_item = 'http:' + sport_item['mbr'][res]['src']
+        li_item = xbmcgui.ListItem(
+            sport_item['title'], iconImage=sport_item['poster'])
+        xbmcplugin.addDirectoryItem(
+            handle=addon_handle, url=url_item, listitem=li_item)
+    xbmcplugin.endOfDirectory(addon_handle)
+    return []
 
 
 def add_show_items(folder):
@@ -164,7 +191,8 @@ if mode is None:
         {'name': 'shows', 'title': 'Телепроекты'},
         {'name': 'news', 'title': 'Новости'},
         # {'name': 'movies', 'title': 'Фильмы и сериалы (TODO)'},
-        {'name': 'doc', 'title': 'Доккино'}
+        {'name': 'doc', 'title': 'Доккино'},
+        {'name': 'sport', 'title': 'Спорт'}
     ]
     add_directory_items(root_items)
 
@@ -180,6 +208,15 @@ elif mode[0] == 'folder':
         add_directory_items(shows)
     elif '/shows/' in foldername:
         add_show_items(foldername)
+    elif foldername == 'sport':
+        sports = []
+        sport_links = get_sport_directory()
+        for sport in sport_links:
+            if 'stream' not in sport['href']:
+                sports.append({'title': sport['name'], 'name': sport['href']})
+        add_directory_items(sports)
+    elif '/sport/' in foldername:
+        add_sport_items(foldername)
     elif foldername == 'doc':
         docs = []
         doc_links = get_doc_directory()
