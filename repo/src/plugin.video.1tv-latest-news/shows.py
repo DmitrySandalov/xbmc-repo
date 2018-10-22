@@ -22,10 +22,12 @@ class ShowDirectoryParser(HTMLParser):
 
         if tag == 'a' and self.process_links:
             for name, value in attrs:
-                if name == 'href' and '/shows/' in value:
+                if name == 'href' and '/shows/' in value \
+                        and '/' not in value.split('/shows/')[1]\
+                        and 'abrakadabra' not in value.split('/shows/')[1]:
                     self.links_cache.append({'href': value})
                     self.process_data = True
-                elif name == 'href' and '/shows/' not in value:
+                else:
                     self.process_data = False
 
     def handle_data(self, data):
