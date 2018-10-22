@@ -1,3 +1,11 @@
+v1.1.0
+- Fix #14 Some sport items could not be played
+- Fix #13 HD quality is not working
+- Fix #12 Doc section not working anymore
+- Fix #11 Some tvshows could not be played
+- Fix #10 Posters are displayed incorrectly
+- Fix #9 Add Sport section
+
 v1.0.9
 - Fix #8 Can't find "Vechernyi Urgant" in tv programs
 
