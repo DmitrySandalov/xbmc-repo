@@ -5,41 +5,58 @@ Kodi plugin: play media from 1tv (Russia).
 
 """
 
-import sys
-import urllib
-import urlparse
-import exceptions
+from urllib.parse import parse_qs
+from urllib.parse import urlencode
+from urllib.request import urlopen
 
+import sys
+import xbmc
 import xbmcgui
 import xbmcplugin
 
-from sport import SportDirectoryParser, SportItemsParser
-from shows import ShowDirectoryParser, ShowItemsParser
 from doc import DocDirectoryParser, DocItemsParser
 from news import NewsItemsParser
+from shows import ShowDirectoryParser, ShowItemsParser
+from sport import SportDirectoryParser, SportItemsParser
 
 __author__ = "Dmitry Sandalov"
-__copyright__ = "Copyright 2018, Dmitry Sandalov"
+__copyright__ = "Copyright 2014-2021, Dmitry Sandalov"
 __credits__ = []
 __license__ = "GNU GPL v2.0"
-__version__ = "1.1.0"
+__version__ = "2.0.0"
 __maintainer__ = "Dmitry Sandalov"
 __email__ = "dmitry@sandalov.org"
 __status__ = "Development"
 
 base_url = sys.argv[0]
 addon_handle = int(sys.argv[1])
-args = urlparse.parse_qs(sys.argv[2][1:])
+args = parse_qs(sys.argv[2][1:])
 
 xbmcplugin.setContent(addon_handle, 'movies')
 
 
-def add_directory_items(dir_items):
+def add_directory_items(dir_items, is_folder):
     for item in dir_items:
-        url_item = build_url({'mode': 'folder', 'foldername': item['name']})
-        li_item = xbmcgui.ListItem(item['title'], iconImage='DefaultFolder.png')
+        li_item = xbmcgui.ListItem(item['title'])
+        if is_folder:
+            url_item = build_url({'mode': 'folder', 'foldername': item['name']})
+        elif item['material_type'] == 'video_material':
+            url_item = get_url_for_item(item)
+        elif item['material_type'] == 'stream_material':
+            # Ensure that 'InputStream Adaptive' is installed and enabled
+            # Add-ons -> VideoPlayer InputStream -> InputStream Adaptive
+            url_item = get_url_for_stream_item(item)
+            li_item.setMimeType('application/xml+dash')
+            li_item.setProperty('MimeType', 'application/xml+dash')
+            li_item.setProperty('inputstream', 'inputstream.adaptive')
+            li_item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
+        else:
+            xbmc.log("Not a folder and unable to get url_item")
+            continue
+        if 'poster' in item:
+            li_item.setArt({'icon': item['poster']})
         xbmcplugin.addDirectoryItem(handle=addon_handle, url=url_item,
-                                    listitem=li_item, isFolder=True)
+                                    listitem=li_item, isFolder=is_folder)
     xbmcplugin.endOfDirectory(addon_handle)
 
 
@@ -61,36 +78,20 @@ def get_shows_directory():
 
 def add_sport_items(folder):
     sport_link = 'https://www.1tv.ru' + folder
-    html = urlopen_safe(sport_link).decode("utf8")
+    html = urlopen_safe(sport_link)
     parser = SportItemsParser()
     parser.feed(html)
     sport_items = parser.get_sport_items()
-
-    for sport_item in sport_items:
-        url_item = get_url_for_item(sport_item)
-        li_item = xbmcgui.ListItem(
-            sport_item['title'], iconImage=sport_item['poster'])
-        xbmcplugin.addDirectoryItem(
-            handle=addon_handle, url=url_item, listitem=li_item)
-    xbmcplugin.endOfDirectory(addon_handle)
-    return []
+    add_directory_items(sport_items, is_folder=False)
 
 
 def add_show_items(folder):
     show_link = 'https://www.1tv.ru' + folder
-    html = urlopen_safe(show_link).decode("utf8")
+    html = urlopen_safe(show_link)
     parser = ShowItemsParser()
     parser.feed(html)
     show_items = parser.get_show_items()
-
-    for show_item in show_items:
-        url_item = get_url_for_item(show_item)
-        li_item = xbmcgui.ListItem(
-            show_item['title'], iconImage=show_item['poster'])
-        xbmcplugin.addDirectoryItem(
-            handle=addon_handle, url=url_item, listitem=li_item)
-    xbmcplugin.endOfDirectory(addon_handle)
-    return []
+    add_directory_items(show_items, is_folder=False)
 
 
 def get_doc_directory():
@@ -103,36 +104,20 @@ def get_doc_directory():
 
 def add_doc_items(folder):
     doc_link = 'https://www.1tv.ru' + folder
-    html = urlopen_safe(doc_link).decode("utf8")
+    html = urlopen_safe(doc_link)
     parser = DocItemsParser()
     parser.feed(html)
     doc_items = parser.get_doc_items()
-
-    for doc_item in doc_items:
-        url_item = get_url_for_item(doc_item)
-        li_item = xbmcgui.ListItem(
-            doc_item['title'], iconImage=doc_item['poster'])
-        xbmcplugin.addDirectoryItem(
-            handle=addon_handle, url=url_item, listitem=li_item)
-    xbmcplugin.endOfDirectory(addon_handle)
-    return []
+    add_directory_items(doc_items, is_folder=False)
 
 
 def add_news_items():
     news_link = 'https://www.1tv.ru/news/issue'
-    html = urlopen_safe(news_link).decode("utf8")
+    html = urlopen_safe(news_link)
     parser = NewsItemsParser()
     parser.feed(html)
     news_items = parser.get_news_items()
-
-    for news in news_items:
-        url_item = get_url_for_item(news)
-        li_item = xbmcgui.ListItem(
-            news['title'], iconImage=news['poster'])
-        xbmcplugin.addDirectoryItem(
-            handle=addon_handle, url=url_item, listitem=li_item)
-    xbmcplugin.endOfDirectory(addon_handle)
-    return []
+    add_directory_items(news_items, is_folder=False)
 
 
 def get_url_for_item(item):
@@ -146,23 +131,30 @@ def get_url_for_item(item):
         url_item = "https:" + url_parts[0] + "_," + bitrate + ",." \
                    + extension + ".urlset/master.m3u8"
     except IndexError:
-        print "Cannot find link for current resolution"
+        xbmc.log("Cannot find link for current resolution")
     if not url_item:
         url_item = 'https:' + item['mbr'][res]['src']
     return url_item
 
 
+def get_url_for_stream_item(item):
+    link = "https://edge2.1internet.tv/dash-live11/streams/1tv/1tvdash.mpd"
+    if item and "stream_begin_at" in item:
+        link += "?e=%s" % item["stream_begin_at"]
+    return link
+
+
 def build_url(query):
     """Plugin navigation."""
-    return base_url + '?' + urllib.urlencode(query)
+    return base_url + '?' + urlencode(query)
 
 
 def urlopen_safe(link):
     """Handle network issues."""
     while True:
         try:
-            return urllib.urlopen(link).read()
-        except exceptions.IOError:
+            return urlopen(link).read().decode('utf-8')
+        except IOError:
             retry = err_no_connection()
             if retry:
                 continue
@@ -207,7 +199,7 @@ if mode is None:
         {'name': 'doc', 'title': 'Доккино'},
         {'name': 'sport', 'title': 'Спорт'}
     ]
-    add_directory_items(root_items)
+    add_directory_items(root_items, is_folder=True)
 
 elif mode[0] == 'folder':
     foldername = args['foldername'][0]
@@ -218,7 +210,7 @@ elif mode[0] == 'folder':
         for show in show_links:
             if 'stream' not in show['href']:
                 shows.append({'title': show['name'], 'name': show['href']})
-        add_directory_items(shows)
+        add_directory_items(shows, is_folder=True)
     elif '/shows/' in foldername:
         add_show_items(foldername)
     elif foldername == 'sport':
@@ -227,7 +219,7 @@ elif mode[0] == 'folder':
         for sport in sport_links:
             if 'stream' not in sport['href']:
                 sports.append({'title': sport['name'], 'name': sport['href']})
-        add_directory_items(sports)
+        add_directory_items(sports, is_folder=True)
     elif '/sport/' in foldername:
         add_sport_items(foldername)
     elif foldername == 'doc':
@@ -235,7 +227,7 @@ elif mode[0] == 'folder':
         doc_links = get_doc_directory()
         for doc in doc_links:
             docs.append({'title': doc['name'], 'name': doc['href']})
-        add_directory_items(docs)
+        add_directory_items(docs, is_folder=True)
     elif '/doc/' in foldername:
         add_doc_items(foldername)
     elif foldername == 'news':
@@ -243,6 +235,6 @@ elif mode[0] == 'folder':
     else:
         url = 'http://localhost/not_supported_yet.mkv'
         li = xbmcgui.ListItem(
-            foldername + ' (not supported)', iconImage='DefaultVideo.png')
+            foldername + ' (not supported)')
         xbmcplugin.addDirectoryItem(handle=addon_handle, url=url, listitem=li)
         xbmcplugin.endOfDirectory(addon_handle)

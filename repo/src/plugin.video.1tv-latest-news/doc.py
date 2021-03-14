@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 import json
-import urllib
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
+from urllib.request import urlopen
 
 
 class DocDirectoryParser(HTMLParser):
+    def error(self, message):
+        xbmc.log(xbmc.LOGERROR, "DocDirectoryParser error")
+
     def __init__(self):
         HTMLParser.__init__(self)
         self.process_links = False
@@ -41,6 +45,9 @@ class DocItemsParser(HTMLParser):
         HTMLParser.__init__(self)
         self.json_link = None
 
+    def error(self, message):
+        xbmc.log(xbmc.LOGERROR, "DocItemsParser error")
+
     def handle_starttag(self, tag, attrs):
         if tag == 'a':
             for name, value in attrs:
@@ -50,5 +57,5 @@ class DocItemsParser(HTMLParser):
                                      collection_id + '&sort=none'
 
     def get_doc_items(self):
-        json_data = urllib.urlopen(self.json_link).read()
+        json_data = urlopen(self.json_link).read()
         return json.loads(json_data)

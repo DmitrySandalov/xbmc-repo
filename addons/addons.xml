@@ -1,37 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.1tv-latest-news" name="1tv Channel" version="1.1.0" provider-name="Dmitry Sandalov">
-    <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="addon.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">1tv Video Archive</summary>
-        <description lang="en">Plays media from 1tv (Russia)</description>
-        <disclaimer lang="en"></disclaimer>
-        <language></language>
-        <platform>all</platform>
-        <license>GNU GPL v2.0</license>
-        <forum>http://xbmc.ru/forum/showthread.php?t=4715</forum>
-        <website>https://github.com/DmitrySandalov/xbmc-repo</website>
-        <email>dmitry@sandalov.org</email>
-        <source>https://github.com/DmitrySandalov/xbmc-repo</source>
-    </extension>
-</addon>
+    <addon id="plugin.video.1tv-latest-news" name="1tv Channel" version="2.0.0" provider-name="Dmitry Sandalov">
+        <requires>
+            <import addon="xbmc.python" version="3.0.0"/>
+        </requires>
+        <extension point="xbmc.python.pluginsource" library="addon.py">
+            <provides>video</provides>
+        </extension>
+        <extension point="xbmc.addon.metadata">
+            <summary lang="en">1tv Video Archive</summary>
+            <description lang="en">Plays media from 1tv (Russia)</description>
+            <disclaimer lang="en"></disclaimer>
+            <language>ru</language>
+            <platform>all</platform>
+            <license>GNU GPL v2.0</license>
+            <forum>http://xbmc.ru/forum/showthread.php?t=4715</forum>
+            <website>https://github.com/DmitrySandalov/xbmc-repo</website>
+            <email>dmitry@sandalov.org</email>
+            <source>https://github.com/DmitrySandalov/xbmc-repo</source>
+            <assets>
+                <icon>icon.png</icon>
+                <fanart>fanart.jpg</fanart>
+            </assets>
+        </extension>
+    </addon>
 
-<addon id="repository.sandalov" name="Dmitry Sandalov's XBMC Repo" version="1.0.2" provider-name="sandalov">
-    <extension point="xbmc.addon.repository" name="Dmitry Sandalov's XBMC Repo">
-        <info compressed="false">https://raw.githubusercontent.com/DmitrySandalov/xbmc-repo/master/addons/addons.xml</info>
-        <checksum>https://raw.githubusercontent.com/DmitrySandalov/xbmc-repo/master/addons/addons.xml.md5</checksum>
-        <datadir zip="true">https://github.com/DmitrySandalov/xbmc-repo/raw/master/repo/zip</datadir>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary>Dmitry Sandalov's XBMC Repo</summary>
-        <description>Plug-ins for XBMC</description>
-        <disclaimer></disclaimer>
-        <platform>all</platform>
-    </extension>
-</addon>
+    <addon id="repository.sandalov" name="Dmitry Sandalov's XBMC Repo" version="1.0.2" provider-name="sandalov">
+        <extension point="xbmc.addon.repository" name="Dmitry Sandalov's XBMC Repo">
+            <info compressed="false">https://raw.githubusercontent.com/DmitrySandalov/xbmc-repo/master/addons/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/DmitrySandalov/xbmc-repo/master/addons/addons.xml.md5</checksum>
+            <datadir zip="true">https://github.com/DmitrySandalov/xbmc-repo/raw/master/repo/zip</datadir>
+        </extension>
+        <extension point="xbmc.addon.metadata">
+            <summary>Dmitry Sandalov's XBMC Repo</summary>
+            <description>Plug-ins for XBMC</description>
+            <disclaimer></disclaimer>
+            <platform>all</platform>
+        </extension>
+    </addon>
 </addons>

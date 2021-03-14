@@ -1,3 +1,6 @@
+v2.0.0
+- Support Kodi 19.x
+
 v1.1.0
 - Fix #14 Some sport items could not be played
 - Fix #13 HD quality is not working
