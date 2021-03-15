@@ -1,3 +1,6 @@
+v2.1.0
+- Fix #20 Add movies section
+
 v2.0.1
 - Fix #16 Doc directory throws error when opening
 - Fix #17 Sport directory shows 0 elements

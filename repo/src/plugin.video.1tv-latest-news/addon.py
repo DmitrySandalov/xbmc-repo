@@ -15,7 +15,9 @@ import xbmcgui
 import xbmcplugin
 
 from doc import DocDirectoryParser, DocItemsParser
+from movies import MoviesItemsParser
 from news import NewsItemsParser
+from series import SeriesDirectoryParser, SeriesItemsParser
 from shows import ShowDirectoryParser, ShowItemsParser
 from sport import SportDirectoryParser, SportItemsParser
 
@@ -23,7 +25,7 @@ __author__ = "Dmitry Sandalov"
 __copyright__ = "Copyright 2014-2021, Dmitry Sandalov"
 __credits__ = []
 __license__ = "GNU GPL v2.0"
-__version__ = "2.0.1"
+__version__ = "2.1.0"
 __maintainer__ = "Dmitry Sandalov"
 __email__ = "dmitry@sandalov.org"
 __status__ = "Development"
@@ -76,6 +78,22 @@ def get_shows_directory():
     return parser.get_shows_directory()
 
 
+def get_doc_directory():
+    all_doc = 'https://www.1tv.ru/doc'
+    html = urlopen_safe(all_doc)
+    parser = DocDirectoryParser()
+    parser.feed(html)
+    return parser.get_doc_directory()
+
+
+def get_series_directory():
+    all_series = 'https://www.1tv.ru/movies/vse-filmy'
+    html = urlopen_safe(all_series)
+    parser = SeriesDirectoryParser()
+    parser.feed(html)
+    return parser.get_series_directory()
+
+
 def add_sport_items(folder):
     sport_link = 'https://www.1tv.ru' + folder
     html = urlopen_safe(sport_link)
@@ -94,14 +112,6 @@ def add_show_items(folder):
     add_directory_items(show_items, is_folder=False)
 
 
-def get_doc_directory():
-    all_doc = 'https://www.1tv.ru/doc'
-    html = urlopen_safe(all_doc)
-    parser = DocDirectoryParser()
-    parser.feed(html)
-    return parser.get_doc_directory()
-
-
 def add_doc_items(folder):
     doc_link = 'https://www.1tv.ru' + folder
     html = urlopen_safe(doc_link)
@@ -111,6 +121,15 @@ def add_doc_items(folder):
     add_directory_items(doc_items, is_folder=False)
 
 
+def add_series_items(folder):
+    series_link = 'https://www.1tv.ru' + folder
+    html = urlopen_safe(series_link)
+    parser = SeriesItemsParser()
+    parser.feed(html)
+    series_items = parser.get_series_items()
+    add_directory_items(series_items, is_folder=False)
+
+
 def add_news_items():
     news_link = 'https://www.1tv.ru/news/issue'
     html = urlopen_safe(news_link)
@@ -118,6 +137,15 @@ def add_news_items():
     parser.feed(html)
     news_items = parser.get_news_items()
     add_directory_items(news_items, is_folder=False)
+
+
+def add_movies_items():
+    movies_link = 'https://www.1tv.ru/movies/vse-filmy'
+    html = urlopen_safe(movies_link)
+    parser = MoviesItemsParser()
+    parser.feed(html)
+    movies_items = parser.get_movies_items()
+    add_directory_items(movies_items, is_folder=False)
 
 
 def get_url_for_item(item):
@@ -193,10 +221,11 @@ mode = args.get('mode', None)
 if mode is None:
     root_items = [
         # {'name': 'live', 'title': 'Прямой эфир (TODO)'},
-        {'name': 'shows', 'title': 'Телепроекты'},
         {'name': 'news', 'title': 'Новости'},
-        # {'name': 'movies', 'title': 'Фильмы и сериалы (TODO)'},
+        {'name': 'shows', 'title': 'Шоу'},
+        {'name': 'movies', 'title': 'Фильмы'},
         {'name': 'doc', 'title': 'Доккино'},
+        {'name': 'series', 'title': 'Сериалы'},
         {'name': 'sport', 'title': 'Спорт'}
     ]
     add_directory_items(root_items, is_folder=True)
@@ -232,6 +261,17 @@ elif mode[0] == 'folder':
         add_doc_items(foldername)
     elif foldername == 'news':
         add_news_items()
+    elif foldername == 'movies':
+        add_movies_items()
+    elif foldername == 'series':
+        series = []
+        series_links = get_series_directory()
+        for series_item in series_links:
+            if 'stream' not in series_item['href']:
+                series.append({'title': series_item['name'], 'name': series_item['href']})
+        add_directory_items(series, is_folder=True)
+    elif '/movies/' in foldername:
+        add_series_items(foldername)
     else:
         url = 'http://localhost/not_supported_yet.mkv'
         li = xbmcgui.ListItem(
