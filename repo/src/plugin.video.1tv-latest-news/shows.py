@@ -14,7 +14,7 @@ class ShowDirectoryParser(HTMLParser):
         self.links_cache = []
 
     def error(self, message):
-        xbmc.log(xbmc.LOGERROR, "ShowDirectoryParser error")
+        xbmc.log("ShowDirectoryParser error")
 
     def handle_starttag(self, tag, attrs):
         if tag == 'section':
@@ -51,7 +51,7 @@ class ShowItemsParser(HTMLParser):
         self.json_link = None
 
     def error(self, message):
-        xbmc.log(xbmc.LOGERROR, "ShowItemsParser error")
+        xbmc.log("ShowItemsParser error")
 
     def handle_starttag(self, tag, attrs):
         if tag == 'div':

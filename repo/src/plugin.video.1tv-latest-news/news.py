@@ -12,7 +12,7 @@ class NewsItemsParser(HTMLParser):
         self.json_link = None
 
     def error(self, message):
-        xbmc.log(xbmc.LOGERROR, "NewsItemsParser error")
+        xbmc.log("NewsItemsParser error")
 
     def handle_starttag(self, tag, attrs):
         if tag == 'div':

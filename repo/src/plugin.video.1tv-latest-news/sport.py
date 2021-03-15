@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import re
 from html.parser import HTMLParser
 from urllib.request import urlopen
 
@@ -14,31 +15,29 @@ class SportDirectoryParser(HTMLParser):
         self.links_cache = []
 
     def error(self, message):
-        xbmc.log(xbmc.LOGERROR, "SportDirectoryParser error")
+        xbmc.log("SportDirectoryParser error")
 
     def handle_starttag(self, tag, attrs):
-        if tag == 'section':
+        if tag == 'header':
             for name, value in attrs:
-                if name == 'class' and value == 'archive':
+                if name == 'id' and value == 'page-title':
                     self.process_links = True
 
         if tag == 'a' and self.process_links:
             for name, value in attrs:
-                if name == 'href' and '/sport/' in value \
-                        and '/' not in value.split('/sport/')[1]\
-                        and 'talisman' not in value.split('/sport/')[1]:
+                if name == 'href' and '/sport/' in value:
                     self.links_cache.append({'href': value})
-                    self.process_data = True
-                else:
-                    self.process_data = False
 
     def handle_data(self, data):
-        if self.process_links and self.process_data and self.lasttag == 'a':
+        if self.process_links and self.lasttag == 'span':
+            if len(self.links_cache) == 0:
+                return
+            data = re.sub(r'[\W]+', ' ', data, flags=re.UNICODE)  # strip all non alphanumeric characters
             self.links_cache[-1]['name'] = data
 
     def handle_endtag(self, tag):
         if self.process_links:
-            if tag == 'section':
+            if tag == 'header':
                 self.process_links = False
 
     def get_sport_directory(self):
@@ -51,7 +50,7 @@ class SportItemsParser(HTMLParser):
         self.json_link = None
 
     def error(self, message):
-        xbmc.log(xbmc.LOGERROR, "SportItemsParser error")
+        xbmc.log("SportItemsParser error")
 
     def handle_starttag(self, tag, attrs):
         if tag == 'div':

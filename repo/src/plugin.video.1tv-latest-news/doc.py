@@ -8,7 +8,7 @@ from urllib.request import urlopen
 
 class DocDirectoryParser(HTMLParser):
     def error(self, message):
-        xbmc.log(xbmc.LOGERROR, "DocDirectoryParser error")
+        xbmc.log("DocDirectoryParser error")
 
     def __init__(self):
         HTMLParser.__init__(self)
@@ -28,6 +28,8 @@ class DocDirectoryParser(HTMLParser):
 
     def handle_data(self, data):
         if self.process_links and self.lasttag == 'span':
+            if len(self.links_cache) == 0:
+                return
             self.links_cache[-1]['name'] = data
 
     def handle_endtag(self, tag):
@@ -46,7 +48,7 @@ class DocItemsParser(HTMLParser):
         self.json_link = None
 
     def error(self, message):
-        xbmc.log(xbmc.LOGERROR, "DocItemsParser error")
+        xbmc.log("DocItemsParser error")
 
     def handle_starttag(self, tag, attrs):
         if tag == 'a':
